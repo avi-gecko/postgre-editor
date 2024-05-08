@@ -2,12 +2,14 @@
 #include "ui_mainwindow.h"
 
 #include "core/headers/init_command.hpp"
+#include "core/headers/postgre_model.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
 }
 
 MainWindow::~MainWindow()

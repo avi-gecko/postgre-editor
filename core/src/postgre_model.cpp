@@ -3,6 +3,13 @@
 #include <QDebug>
 
 
+PostgreModel::PostgreModel(const char *main_table, const QList<std::pair<int, QSqlRelation> >& relations)
+    :_main_table(main_table),
+     _relations(relations)
+{
+
+}
+
 bool PostgreModel::init(const char *from)
 {
     QString parse_from = from;
@@ -17,6 +24,20 @@ bool PostgreModel::init(const char *from)
     db.setUserName(init_data[2]);
     db.setPassword(init_data[3]);
     bool ok = db.open();
+    if (!ok)
+    {
+        return ok;
+    }
+
+    _model = new QSqlRelationalTableModel(nullptr, db);
+    _model->setTable(_main_table);
+
+    for (auto& relation : _relations)
+    {
+        _model->setRelation(relation.first, relation.second);
+    }
+
+    qDebug() << _model->select();
     return ok;
 }
 
