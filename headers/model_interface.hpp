@@ -5,13 +5,13 @@
 class ModelInterface
 {
 public:
-  virtual void init(const char* from) = 0;
-  virtual void add(const char* what, const char* to, const char* table) = 0;
-  virtual void edit(const char* what, const char* to, const char* table) = 0;
-  virtual void delete(const char* what, const char* table) = 0;
-  virtual const char* get(const char* what, const char* table) = 0;
+    virtual bool init(const char* from) = 0;
+    virtual void add(const char* what, const char* to, const char* table) = 0;
+    virtual void edit(const char* what, const char* to, const char* table) = 0;
+    virtual void remove(const char* what, const char* table) = 0;
+    virtual const char* get(const char* what, const char* table) = 0;
 
-  virtual ~ModelInterface() {};
+    virtual ~ModelInterface() {}
 };
 
 

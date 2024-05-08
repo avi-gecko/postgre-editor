@@ -1,4 +1,4 @@
-#include "command.hpp"
+#include "headers/command.hpp"
 
 std::stack<Command*> Command::_commands;
 

@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui sql testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,17 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    core/src/init_command.cpp \
     src/command.cpp \
-    src/test.cpp \
-    qt/src/main.cpp \
-    qt/src/mainwindow.cpp
+    main.cpp \
+    qt/src/mainwindow.cpp \
+    core/src/postgre_model.cpp
 
 HEADERS += \
+    core/headers/init_command.hpp \
     headers/command.hpp \
     headers/model_interface.hpp \
-    headers/test.hpp \
     headers/view_interface.hpp \
-    qt/headers/mainwindow.h
+    qt/headers/mainwindow.h \
+    core/headers/postgre_model.hpp
 
 FORMS += \
     qt/ui/mainwindow.ui
