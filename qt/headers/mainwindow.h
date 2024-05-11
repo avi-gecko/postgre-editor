@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "headers/view_interface.hpp"
+#include "core/headers/postgre_model.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -13,10 +14,11 @@ class MainWindow : public QMainWindow, public ViewInterface
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr, PostgreModel* model = nullptr);
     ~MainWindow();
 
     void init_command() override;
+    void close_command();
 
     void add_command() override;
     void add_directory_command() override;
@@ -32,7 +34,10 @@ public:
 
     void handle_command() override;
 
+private slots:
+
 private:
     Ui::MainWindow *ui;
+    PostgreModel* _model;
 };
 #endif // MAINWINDOW_H

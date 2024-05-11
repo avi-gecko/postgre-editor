@@ -1,4 +1,4 @@
-QT       += core gui sql testlib
+QT       += core gui sql testlib widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     core/src/init_command.cpp \
+    qt/ui/connectdialog.cpp \
     src/command.cpp \
     main.cpp \
     qt/src/mainwindow.cpp \
@@ -21,9 +22,11 @@ HEADERS += \
     headers/model_interface.hpp \
     headers/view_interface.hpp \
     qt/headers/mainwindow.h \
-    core/headers/postgre_model.hpp
+    core/headers/postgre_model.hpp \
+    qt/ui/connectdialog.h
 
 FORMS += \
+    qt/ui/connectdialog.ui \
     qt/ui/mainwindow.ui
 
 TRANSLATIONS += \

@@ -1,4 +1,5 @@
 #include "qt/headers/mainwindow.h"
+#include "core/headers/postgre_model.hpp"
 
 #include <QApplication>
 #include <QLocale>
@@ -18,7 +19,9 @@ int main(int argc, char *argv[])
             break;
         }
     }
-    MainWindow w;
+    const std::pair product_relation = {2, QSqlRelation("products", "id", "product_name")};
+    const QList<std::pair<int, QSqlRelation>>& realtions = {product_relation};
+    MainWindow w(nullptr, new PostgreModel("suppliers", realtions));
     w.show();
     return a.exec();
 }

@@ -1,11 +1,36 @@
 #include "../headers/postgre_model.hpp"
 #include <QSqlDatabase>
 #include <QDebug>
+#include <QSqlDriver>
+#include <QSqlQuery>
+#include <QSqlRelationalDelegate>
+
+
+class QSqlRelationalTableModelDebug: public QSqlRelationalTableModel
+{
+public:
+    QSqlRelationalTableModelDebug(QObject *parent = nullptr,
+              const QSqlDatabase &db = QSqlDatabase()) {
+        QSqlRelationalTableModel(parent, db);
+    }
+    void fetchMore(const QModelIndex &parent = QModelIndex())
+    {
+        qDebug() << "Fetch more!";
+        QSqlQueryModel::fetchMore(parent);
+    }
+    bool canFetchMore(const QModelIndex &parent = QModelIndex())
+    {
+        qDebug() << "Can fetch more!";
+        return QSqlQueryModel::canFetchMore(parent);
+    }
+};
+
 
 
 PostgreModel::PostgreModel(const char *main_table, const QList<std::pair<int, QSqlRelation> >& relations)
     :_main_table(main_table),
-     _relations(relations)
+     _relations(relations),
+     _is_init(false)
 {
 
 }
@@ -19,6 +44,7 @@ bool PostgreModel::init(const char *from)
     qDebug() << init_data;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
+    db.setConnectOptions("requiressl=1;connect_timeout=2");
     db.setHostName(init_data[0]);
     db.setDatabaseName(init_data[1]);
     db.setUserName(init_data[2]);
@@ -29,7 +55,8 @@ bool PostgreModel::init(const char *from)
         return ok;
     }
 
-    _model = new QSqlRelationalTableModel(nullptr, db);
+
+    _model = new QSqlRelationalTableModelDebug(nullptr, db);
     _model->setTable(_main_table);
 
     for (auto& relation : _relations)
@@ -37,7 +64,11 @@ bool PostgreModel::init(const char *from)
         _model->setRelation(relation.first, relation.second);
     }
 
-    qDebug() << _model->select();
+
+    _model->select();
+
+    qDebug() << db.driver()->hasFeature(QSqlDriver::QuerySize);
+    _is_init = true;
     return ok;
 }
 
@@ -51,12 +82,30 @@ void PostgreModel::edit(const char *what, const char *to, const char *table)
 
 }
 
-void PostgreModel::remove(const char *what, const char *table)
+bool PostgreModel::remove(const char *what, const char *table)
 {
-
+    unsigned int row_index = QString(what).toUInt();
+    return _model->removeRow(row_index);
 }
 
 const char *PostgreModel::get(const char *what, const char *table)
 {
 
+}
+
+void PostgreModel::bind(QAbstractItemView *gui)
+{
+    gui->setItemDelegate(new QSqlRelationalDelegate(gui));
+    gui->setModel(this->_model);
+}
+
+bool PostgreModel::is_initialized()
+{
+    return _is_init;
+}
+
+bool PostgreModel::close()
+{
+    delete _model;
+    _is_init = false;
 }

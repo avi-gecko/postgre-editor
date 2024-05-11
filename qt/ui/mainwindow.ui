@@ -18,11 +18,30 @@
     <item>
      <widget class="QTableView" name="tableView"/>
     </item>
-    <item>
+    <item alignment="Qt::AlignTop">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
-       <string>GroupBox</string>
+       <string>Transaction</string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="acceptButton">
+         <property name="text">
+          <string>Accept</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="declineButton">
+         <property name="text">
+          <string>Decline</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -36,6 +55,14 @@
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOpen">
+    <property name="title">
+     <string>Open</string>
+    </property>
+    <addaction name="actionConnect_to_a_database"/>
+    <addaction name="actionClose_connection"/>
+   </widget>
+   <addaction name="menuOpen"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -49,6 +76,16 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <action name="actionConnect_to_a_database">
+   <property name="text">
+    <string>Connect to a database</string>
+   </property>
+  </action>
+  <action name="actionClose_connection">
+   <property name="text">
+    <string>Close connection</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

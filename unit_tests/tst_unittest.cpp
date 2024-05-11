@@ -17,7 +17,9 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void test_init_db();
-    void test_get_from_db();
+    void test_remove_to_db();
+    void test_add_to_db();
+
 };
 
 UnitTest::UnitTest()
@@ -50,10 +52,27 @@ void UnitTest::test_init_db()
     delete model;
 }
 
-void UnitTest::test_get_from_db()
+void UnitTest::test_remove_to_db()
 {
-
+    const std::pair product_relation = {2, QSqlRelation("products", "id", "product_name")};
+    const QList<std::pair<int, QSqlRelation>>& realtions = {product_relation};
+    ModelInterface* model = new PostgreModel("suppliers", realtions);
+    model->init("192.168.56.2;db;alexey;123");
+    QVERIFY(model->remove("2", ""));
+    delete model;
 }
+
+void UnitTest::test_add_to_db()
+{
+    const std::pair product_relation = {2, QSqlRelation("products", "id", "product_name")};
+    const QList<std::pair<int, QSqlRelation>>& realtions = {product_relation};
+    ModelInterface* model = new PostgreModel("suppliers", realtions);
+    model->init("192.168.56.2;db;alexey;123");
+    QVERIFY(model->remove("2", ""));
+    delete model;
+}
+
+
 
 QTEST_MAIN(UnitTest)
 
