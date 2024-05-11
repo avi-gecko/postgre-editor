@@ -19,6 +19,8 @@ public:
     void bind(QAbstractItemView * gui);
     bool is_initialized();
     bool close();
+    bool apply();
+    void descline();
 
     ~PostgreModel() {delete _model;};
 

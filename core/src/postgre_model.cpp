@@ -6,6 +6,7 @@
 #include <QSqlRelationalDelegate>
 
 
+
 class QSqlRelationalTableModelDebug: public QSqlRelationalTableModel
 {
 public:
@@ -58,6 +59,7 @@ bool PostgreModel::init(const char *from)
 
     _model = new QSqlRelationalTableModelDebug(nullptr, db);
     _model->setTable(_main_table);
+    _model->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     for (auto& relation : _relations)
     {
@@ -108,4 +110,14 @@ bool PostgreModel::close()
 {
     delete _model;
     _is_init = false;
+}
+
+bool PostgreModel::apply()
+{
+    return _model->submitAll();
+}
+
+void PostgreModel::descline()
+{
+    _model->revertAll();
 }

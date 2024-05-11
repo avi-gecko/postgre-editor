@@ -19,6 +19,8 @@ public:
 
     void init_command() override;
     void close_command();
+    void apply_transaction();
+    void decline_transaction();
 
     void add_command() override;
     void add_directory_command() override;
