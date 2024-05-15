@@ -24,7 +24,9 @@ FORMS += \
     qt/ui/mainwindow.ui
 
 TRANSLATIONS += \
-    qt/translations/cw-vesupplier_ru_RU.ts
+    qt/translations/cw-vesupplier_ru_RU.ts \
+    qt/translations/cw-vesupplier_en_US.ts \
+    qt/translations/cw-vesupplier_zh_CN.ts
 
 CONFIG += lrelease
 CONFIG += embed_translations

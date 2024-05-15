@@ -4,6 +4,7 @@
 #include <QSqlDriver>
 #include <QSqlQuery>
 #include <QSqlRelationalDelegate>
+#include <QCoreApplication>
 
 
 
@@ -69,11 +70,7 @@ bool PostgreModel::init(const char *from)
         _model->setRelation(relation.first, relation.second);
     }
 
-    int column_index = 1;
-    for (auto& column_name: _column_names)
-    {
-        _model->setHeaderData(column_index++, Qt::Horizontal, column_name);
-    }
+    update_column_names();
 
     _model->select();
 
@@ -128,4 +125,12 @@ QModelIndex PostgreModel::index(int row)
     return _model->index(row, 1);
 }
 
+void PostgreModel::update_column_names()
+{
+    int column_index = 1;
+    for (auto& column_name: _column_names)
+    {
+        _model->setHeaderData(column_index++, Qt::Horizontal, QCoreApplication::translate("QObject", column_name.toLocal8Bit().data()));
+    }
+}
 

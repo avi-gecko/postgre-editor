@@ -89,6 +89,7 @@ void ConnectDialog::_connect_to_db(const char* data)
     _model->bind(_view);
     _view->hideColumn(0);
     _view->resizeColumnsToContents();
+    _view->setSortingEnabled(true);
     _view->show();
 }
 

@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QCloseEvent>
+#include <QLocale>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
     : QMainWindow(parent)
@@ -12,6 +14,38 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
     , _model(model)
 {
     ui->setupUi(this);
+
+    qDebug() << QLocale();
+    if (_translator.load(QLocale(), "cw-vesupplier", "_", "translations", ".qm"))
+    {
+        qDebug() << _translator.language();
+        qApp->installTranslator(&_translator);
+        ui->retranslateUi(this);
+    }
+
+
+    QDir language_files_path("translations");
+    for (auto& file_name : language_files_path.entryList())
+    {
+        qDebug() << file_name;
+        if (_translator.load(file_name, "translations"))
+        {
+            QAction* language = new QAction(_translator.language());
+            connect(language,
+                    &QAction::triggered,
+                    [=]()
+                    {
+                        _translator.load(file_name, "translations");
+                        qApp->installTranslator(&_translator);
+                        qDebug() << _translator.language();
+                        ui->retranslateUi(this);
+                        if (_model->is_initialized())
+                            _model->update_column_names();
+                    });
+            _languages.append(language);
+        }
+    }
+    ui->menuLanguages->addActions(_languages);
 
     QSettings settings("MGSU", "Database");
     settings.beginGroup("MainWindowGeometry");
@@ -24,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
 
     qDebug() << "Enter window size: " << size();
     qDebug() << "Enter window position: " << pos().rx() << ' ' << pos().rx();
+
+
 
     connect(ui->actionConnect_to_a_database,
             &QAction::triggered,
@@ -60,6 +96,11 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
             this,
             &MainWindow::author_command);
 
+    connect(ui->sortingBox,
+            &QCheckBox::stateChanged,
+            this,
+            &MainWindow::sorting_command);
+
 }
 
 MainWindow::~MainWindow()
@@ -67,6 +108,8 @@ MainWindow::~MainWindow()
 
     delete ui;
     delete _model;
+    qDeleteAll(_languages);
+    _languages.clear();
 }
 
 void MainWindow::init_command()
@@ -74,16 +117,23 @@ void MainWindow::init_command()
     qDebug() << "Initialization database...";
     ConnectDialog w(nullptr, _model, ui->tableView);
     w.exec();
+    ui->sortingBox->setCheckable(true);
+    ui->sortingBox->setChecked(true);
 }
 
 void MainWindow::close_command()
 {
     if (_model->is_initialized())
         _model->close();
+    ui->sortingBox->setChecked(false);
+    ui->sortingBox->setCheckable(false);
 }
 
 void MainWindow::apply_transaction()
 {
+    if (!_model->is_initialized())
+        return;
+
     if (_model->apply())
     {
         ui->tableView->reset();
@@ -97,12 +147,17 @@ void MainWindow::apply_transaction()
 
 void MainWindow::decline_transaction()
 {
+    if (!_model->is_initialized())
+        return;
     _model->decline();
     qDebug() << "Descline transaction";
 }
 
 void MainWindow::add_command()
-{   int inserted_row = _model->add();
+{
+    if (!_model->is_initialized())
+        return;
+    int inserted_row = _model->add();
     qDebug() << "add_command inserted row: " << inserted_row;
     if (!inserted_row)
     {
@@ -120,6 +175,8 @@ void MainWindow::add_command()
 
 void MainWindow::delete_command()
 {
+    if (!_model->is_initialized())
+        return;
     QModelIndexList indexList = ui->tableView->selectionModel()->selectedIndexes();
     qDebug() << "Count = " << indexList.count();
     for (QModelIndex &index : indexList)
@@ -131,6 +188,18 @@ void MainWindow::delete_command()
             sprintf(buf, "%d", selectedRow);
             _model->remove(buf);
         }
+    }
+}
+
+void MainWindow::sorting_command()
+{
+    switch(ui->sortingBox->checkState()) {
+    case Qt::Checked:
+        ui->tableView->setSortingEnabled(true);
+        break;
+    case Qt::Unchecked:
+        ui->tableView->setSortingEnabled(false);
+        ui->tableView->sortByColumn(0, Qt::AscendingOrder);
     }
 }
 
@@ -152,8 +221,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
     qDebug() << "Exit window position: " << pos().rx() << ' ' << pos().rx();
 
     event->accept();
-
 }
+
 
 
 

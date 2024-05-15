@@ -22,6 +22,7 @@ public:
     bool apply();
     void decline();
     QModelIndex index(int row);
+    void update_column_names();
 
 
     ~PostgreModel() {delete _model;}

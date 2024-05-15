@@ -72,6 +72,28 @@
         </layout>
        </widget>
       </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>View</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_12">
+         <item>
+          <widget class="QCheckBox" name="sortingBox">
+           <property name="text">
+            <string>Sorting</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -98,7 +120,13 @@
     </property>
     <addaction name="actionAuthor"/>
    </widget>
+   <widget class="QMenu" name="menuLanguages">
+    <property name="title">
+     <string>Languages</string>
+    </property>
+   </widget>
    <addaction name="menuOpen"/>
+   <addaction name="menuLanguages"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

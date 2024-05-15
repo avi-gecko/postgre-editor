@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "core/headers/postgre_model.hpp"
+#include <QTranslator>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,12 +26,17 @@ public:
     void add_command();
     void delete_command();
 
+    void sorting_command();
+
     void author_command();
 
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
+
 
 private:
     Ui::MainWindow *ui;
     PostgreModel* _model;
+    QTranslator _translator;
+    QList<QAction*> _languages;
 };
 #endif // MAINWINDOW_H
