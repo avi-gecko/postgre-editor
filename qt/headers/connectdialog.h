@@ -2,6 +2,7 @@
 #define CONNECTDIALOG_H
 
 #include <QDialog>
+#include <QTableView>
 #include "core/headers/postgre_model.hpp"
 
 namespace Ui {
@@ -13,7 +14,7 @@ class ConnectDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ConnectDialog(QWidget *parent = nullptr, PostgreModel* model = nullptr);
+    explicit ConnectDialog(QWidget *parent = nullptr, PostgreModel* model = nullptr, QTableView* view = nullptr);
     ~ConnectDialog();
 
 private slots:
@@ -24,6 +25,7 @@ private slots:
 private:
     Ui::ConnectDialog *ui;
     PostgreModel* _model;
+    QTableView* _view;
 };
 
 #endif // CONNECTDIALOG_H

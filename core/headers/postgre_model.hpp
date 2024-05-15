@@ -1,28 +1,28 @@
 #ifndef POSTGRE_MODEL_HPP
 #define POSTGRE_MODEL_HPP
 
-#include "../headers/model_interface.hpp"
 #include <QSqlRelationalTableModel>
 #include <QAbstractItemView>
+#include <QSqlError>
 
 
-class PostgreModel: public ModelInterface
+class PostgreModel
 {
 public:
     PostgreModel(const char* main_table, const QList<std::pair<int, QSqlRelation>>& relations);
 
-    bool init(const char* from) override;
-    void add(const char* what, const char* to, const char* table) override;
-    void edit(const char* what, const char* to, const char* table) override;
-    bool remove(const char* what, const char* table) override;
-    const char* get(const char* what, const char* table) override;
+    bool init(const char* from);
+    int add();
+    bool remove(const char* what);
     void bind(QAbstractItemView * gui);
     bool is_initialized();
-    bool close();
+    void close();
     bool apply();
-    void descline();
+    void decline();
+    QModelIndex index(int row);
 
-    ~PostgreModel() {delete _model;};
+
+    ~PostgreModel() {delete _model;}
 
 private:
     QSqlRelationalTableModel* _model;

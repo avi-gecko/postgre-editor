@@ -74,31 +74,23 @@ bool PostgreModel::init(const char *from)
     return ok;
 }
 
-void PostgreModel::add(const char *what, const char *to, const char *table)
+int PostgreModel::add()
 {
+    int row = _model->rowCount();
 
+    return _model->insertRow(row);
 }
 
-void PostgreModel::edit(const char *what, const char *to, const char *table)
-{
-
-}
-
-bool PostgreModel::remove(const char *what, const char *table)
+bool PostgreModel::remove(const char *what)
 {
     unsigned int row_index = QString(what).toUInt();
     return _model->removeRow(row_index);
 }
 
-const char *PostgreModel::get(const char *what, const char *table)
-{
-
-}
-
 void PostgreModel::bind(QAbstractItemView *gui)
 {
     gui->setItemDelegate(new QSqlRelationalDelegate(gui));
-    gui->setModel(this->_model);
+    gui->setModel(_model);
 }
 
 bool PostgreModel::is_initialized()
@@ -106,7 +98,7 @@ bool PostgreModel::is_initialized()
     return _is_init;
 }
 
-bool PostgreModel::close()
+void PostgreModel::close()
 {
     delete _model;
     _is_init = false;
@@ -117,7 +109,14 @@ bool PostgreModel::apply()
     return _model->submitAll();
 }
 
-void PostgreModel::descline()
+void PostgreModel::decline()
 {
     _model->revertAll();
 }
+
+QModelIndex PostgreModel::index(int row)
+{
+    return _model->index(row, 1);
+}
+
+

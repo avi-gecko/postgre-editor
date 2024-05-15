@@ -1,12 +1,12 @@
 #include "qt/headers/connectdialog.h"
 #include "ui_connectdialog.h"
-#include "core/headers/qt_commands.hpp"
 #include <QMessageBox>
 
-ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model) :
+ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model, QTableView* view) :
     QDialog(parent),
     ui(new Ui::ConnectDialog),
-    _model(model)
+    _model(model),
+    _view(view)
 {
     ui->setupUi(this);
 }
@@ -25,8 +25,15 @@ void ConnectDialog::on_buttonBox_accepted()
                        ui->userEdit->text() + ';' +
                        ui->passwordEdit->text();
         qDebug() << from;
-        InitCommand command(_model, this, from.toLocal8Bit().data());
-        command.execute();
+        if (!_model->init(from.toLocal8Bit().data()))
+        {
+            QMessageBox::critical(this,
+                                  tr("Error!"),
+                                  tr("Can't connect to database.\n"));
+            return;
+        }
+        _model->bind(_view);
+        _view->show();
     }
     else
     {

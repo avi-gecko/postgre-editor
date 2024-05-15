@@ -1,7 +1,6 @@
 #include "qt/headers/mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "core/headers/qt_commands.hpp"
 #include "qt/headers/connectdialog.h"
 #include <QMessageBox>
 
@@ -37,6 +36,11 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
             this,
             &MainWindow::decline_transaction);
 
+    connect(ui->addButton,
+            &QPushButton::clicked,
+            this,
+            &MainWindow::add_command);
+
 }
 
 MainWindow::~MainWindow()
@@ -48,10 +52,8 @@ MainWindow::~MainWindow()
 void MainWindow::init_command()
 {
     qDebug() << "Initialization database...";
-    ConnectDialog w(nullptr, _model);
+    ConnectDialog w(nullptr, _model, ui->tableView);
     w.exec();
-    _model->bind(ui->tableView);
-    ui->tableView->show();
 }
 
 void MainWindow::close_command()
@@ -68,35 +70,28 @@ void MainWindow::apply_transaction()
     }
     else
         QMessageBox::critical(this,
-                              tr("Error select!"),
-                              tr("Error!"));
+                              tr("Error transaction!"),
+                              tr("Cannot apply transaction\n"));
 }
 
 void MainWindow::decline_transaction()
 {
-    _model->descline();
+    _model->decline();
     qDebug() << "Descline transaction";
 }
 
 void MainWindow::add_command()
-{
+{   int inserted_row = _model->add();
+    if (!inserted_row)
+        QMessageBox::critical(this,
+                              tr("Error insert row!"),
+                              tr("Cannot insert row.\n"));
 
+    QModelIndex insert_index = _model->index(inserted_row);
+    ui->tableView->setCurrentIndex(insert_index);
+    ui->tableView->edit(insert_index);
 }
 
-void MainWindow::add_directory_command()
-{
-
-}
-
-void MainWindow::edit_command()
-{
-
-}
-
-void MainWindow::edit_directory_command()
-{
-
-}
 
 void MainWindow::delete_command()
 {
@@ -109,29 +104,10 @@ void MainWindow::delete_command()
         if (selectedRow >= 0) {
             char buf[256];
             sprintf(buf, "%d", selectedRow);
-            _model->remove(buf, "");
+            _model->remove(buf);
         }
     }
 }
 
-void MainWindow::delete_directory_command()
-{
-
-}
-
-void MainWindow::get_command()
-{
-
-}
-
-void MainWindow::get_directory()
-{
-
-}
-
-void MainWindow::handle_command()
-{
-
-}
 
 
