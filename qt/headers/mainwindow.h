@@ -27,6 +27,8 @@ public:
 
     void author_command();
 
+    void closeEvent(QCloseEvent *event);
+
 private:
     Ui::MainWindow *ui;
     PostgreModel* _model;

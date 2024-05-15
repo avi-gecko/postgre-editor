@@ -3,6 +3,8 @@
 
 #include "qt/headers/connectdialog.h"
 #include <QMessageBox>
+#include <QSettings>
+#include <QCloseEvent>
 
 MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
     : QMainWindow(parent)
@@ -10,6 +12,18 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
     , _model(model)
 {
     ui->setupUi(this);
+
+    QSettings settings("MGSU", "Database");
+    settings.beginGroup("MainWindowGeometry");
+        const auto geometry = settings.value("geometry", QByteArray()).toByteArray();
+        if (geometry.isEmpty())
+            setGeometry(200, 200, 400, 400);
+        else
+            restoreGeometry(geometry);
+    settings.endGroup();
+
+    qDebug() << "Enter window size: " << size();
+    qDebug() << "Enter window position: " << pos().rx() << ' ' << pos().rx();
 
     connect(ui->actionConnect_to_a_database,
             &QAction::triggered,
@@ -50,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
 
 MainWindow::~MainWindow()
 {
+
     delete ui;
     delete _model;
 }
@@ -123,6 +138,20 @@ void MainWindow::author_command()
     QMessageBox::information(this,
                              tr("Author"),
                              tr("Created by Alexey Ilin ICTMS 3-5"));
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QSettings settings("MGSU", "Database");
+    settings.beginGroup("MainWindowGeometry");
+        settings.setValue("geometry", saveGeometry());
+    settings.endGroup();
+
+    qDebug() << "Exit window size: " << size();
+    qDebug() << "Exit window position: " << pos().rx() << ' ' << pos().rx();
+
+    event->accept();
+
 }
 
 
