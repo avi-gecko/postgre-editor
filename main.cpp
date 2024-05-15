@@ -5,6 +5,8 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QTest>
+#include <QObject>
+
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +23,13 @@ int main(int argc, char *argv[])
     }
     const std::pair product_relation = {2, QSqlRelation("products", "id", "product_name")};
     const QList<std::pair<int, QSqlRelation>>& realtions = {product_relation};
-    MainWindow w(nullptr, new PostgreModel("suppliers", realtions));
+    const QList<QString> column_names = {QObject::tr("Supplier"),
+                                         QObject::tr("Equipment"),
+                                         QObject::tr("Equipment"),
+                                         QObject::tr("Price"),
+                                         QObject::tr("Stock"),
+                                         QObject::tr("Email")};
+    MainWindow w(nullptr, new PostgreModel("suppliers", realtions, column_names));
     w.show();
     return a.exec();
 }

@@ -82,10 +82,14 @@ void MainWindow::decline_transaction()
 
 void MainWindow::add_command()
 {   int inserted_row = _model->add();
+    qDebug() << "add_command inserted row: " << inserted_row;
     if (!inserted_row)
+    {
         QMessageBox::critical(this,
                               tr("Error insert row!"),
                               tr("Cannot insert row.\n"));
+        return;
+    }
 
     QModelIndex insert_index = _model->index(inserted_row);
     ui->tableView->setCurrentIndex(insert_index);

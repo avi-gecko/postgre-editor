@@ -9,7 +9,9 @@
 class PostgreModel
 {
 public:
-    PostgreModel(const char* main_table, const QList<std::pair<int, QSqlRelation>>& relations);
+    PostgreModel(const char* main_table,
+                 const QList<std::pair<int, QSqlRelation>>& relations,
+                 const QList<QString>& column_names);
 
     bool init(const char* from);
     int add();
@@ -28,6 +30,7 @@ private:
     QSqlRelationalTableModel* _model;
     const char* _main_table;
     const QList<std::pair<int, QSqlRelation>>& _relations;
+    const QList<QString>& _column_names;
     PostgreModel() = delete;
     bool _is_init;
 

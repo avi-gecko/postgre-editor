@@ -28,9 +28,12 @@ public:
 
 
 
-PostgreModel::PostgreModel(const char *main_table, const QList<std::pair<int, QSqlRelation> >& relations)
+PostgreModel::PostgreModel(const char *main_table,
+                           const QList<std::pair<int, QSqlRelation> >& relations,
+                           const QList<QString>& column_names)
     :_main_table(main_table),
      _relations(relations),
+     _column_names(column_names),
      _is_init(false)
 {
 
@@ -66,6 +69,11 @@ bool PostgreModel::init(const char *from)
         _model->setRelation(relation.first, relation.second);
     }
 
+    int column_index = 1;
+    for (auto& column_name: _column_names)
+    {
+        _model->setHeaderData(column_index++, Qt::Horizontal, column_name);
+    }
 
     _model->select();
 
@@ -77,8 +85,9 @@ bool PostgreModel::init(const char *from)
 int PostgreModel::add()
 {
     int row = _model->rowCount();
-
-    return _model->insertRow(row);
+    qDebug() << "Inserted row: " << row;
+    _model->insertRow(row);
+    return row;
 }
 
 bool PostgreModel::remove(const char *what)

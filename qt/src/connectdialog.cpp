@@ -33,6 +33,8 @@ void ConnectDialog::on_buttonBox_accepted()
             return;
         }
         _model->bind(_view);
+        _view->hideColumn(0);
+        _view->resizeColumnsToContents();
         _view->show();
     }
     else
