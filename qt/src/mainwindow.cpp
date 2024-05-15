@@ -78,7 +78,8 @@ void MainWindow::init_command()
 
 void MainWindow::close_command()
 {
-    _model->close();
+    if (_model->is_initialized())
+        _model->close();
 }
 
 void MainWindow::apply_transaction()

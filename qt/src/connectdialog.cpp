@@ -1,6 +1,10 @@
 #include "qt/headers/connectdialog.h"
 #include "ui_connectdialog.h"
+
 #include <QMessageBox>
+#include <QDragEnterEvent>
+#include <QMimeData>
+#include <QFile>
 
 ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model, QTableView* view) :
     QDialog(parent),
@@ -9,6 +13,7 @@ ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model, QTableView* v
     _view(view)
 {
     ui->setupUi(this);
+    setAcceptDrops(true);
 }
 
 ConnectDialog::~ConnectDialog()
@@ -16,26 +21,47 @@ ConnectDialog::~ConnectDialog()
     delete ui;
 }
 
+void ConnectDialog::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasUrls())
+    {
+        e->acceptProposedAction();
+    }
+
+}
+
+void ConnectDialog::dropEvent(QDropEvent *e)
+{
+    QFile file_connection(e->mimeData()->urls()[0].toLocalFile());
+    if (!file_connection.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QTextStream in(&file_connection);
+    QString connection_data = in.readLine();
+    qDebug() << connection_data;
+    if (!_model->is_initialized())
+    {
+        ConnectDialog::_connect_to_db(connection_data.toLocal8Bit().data());
+        close();
+    }
+    else
+    {
+        QMessageBox::critical(this,
+                              tr("Error!"),
+                              tr("Database is already opened."));
+    }
+}
+
 void ConnectDialog::on_buttonBox_accepted()
 {
     if (!_model->is_initialized())
     {
-        QString from = ui->serverEdit->text() + ';' +
+        QString connection_data = ui->serverEdit->text() + ';' +
                        ui->databaseEdit->text() + ';' +
                        ui->userEdit->text() + ';' +
                        ui->passwordEdit->text();
-        qDebug() << from;
-        if (!_model->init(from.toLocal8Bit().data()))
-        {
-            QMessageBox::critical(this,
-                                  tr("Error!"),
-                                  tr("Can't connect to database.\n"));
-            return;
-        }
-        _model->bind(_view);
-        _view->hideColumn(0);
-        _view->resizeColumnsToContents();
-        _view->show();
+        qDebug() << connection_data;
+        ConnectDialog::_connect_to_db(connection_data.toLocal8Bit().data());
     }
     else
     {
@@ -48,6 +74,21 @@ void ConnectDialog::on_buttonBox_accepted()
 
 void ConnectDialog::on_buttonBox_rejected()
 {
-    this->close();
+    close();
+}
+
+void ConnectDialog::_connect_to_db(const char* data)
+{
+    if (!_model->init(data))
+    {
+        QMessageBox::critical(this,
+                              tr("Error!"),
+                              tr("Can't connect to database.\n"));
+        return;
+    }
+    _model->bind(_view);
+    _view->hideColumn(0);
+    _view->resizeColumnsToContents();
+    _view->show();
 }
 
