@@ -41,6 +41,11 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
             this,
             &MainWindow::add_command);
 
+    connect(ui->actionAuthor,
+            &QAction::triggered,
+            this,
+            &MainWindow::author_command);
+
 }
 
 MainWindow::~MainWindow()
@@ -111,6 +116,13 @@ void MainWindow::delete_command()
             _model->remove(buf);
         }
     }
+}
+
+void MainWindow::author_command()
+{
+    QMessageBox::information(this,
+                             tr("Author"),
+                             tr("Created by Alexey Ilin ICTMS 3-5"));
 }
 
 

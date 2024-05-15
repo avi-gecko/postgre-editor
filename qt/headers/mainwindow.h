@@ -25,8 +25,7 @@ public:
     void add_command();
     void delete_command();
 
-
-private slots:
+    void author_command();
 
 private:
     Ui::MainWindow *ui;
