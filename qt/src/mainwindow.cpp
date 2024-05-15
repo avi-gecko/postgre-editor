@@ -1,8 +1,8 @@
 #include "qt/headers/mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "core/headers/init_command.hpp"
-#include "qt/ui/connectdialog.h"
+#include "core/headers/qt_commands.hpp"
+#include "qt/headers/connectdialog.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent, PostgreModel* model)

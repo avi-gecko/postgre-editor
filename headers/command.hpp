@@ -14,7 +14,7 @@ public:
 
     static void run();
 
-    virtual ~Command() {};
+    virtual ~Command() {}
 
 private:
     static std::stack<Command*> _commands;

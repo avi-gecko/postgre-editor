@@ -1,5 +1,7 @@
-#include "connectdialog.h"
+#include "qt/headers/connectdialog.h"
 #include "ui_connectdialog.h"
+#include "core/headers/qt_commands.hpp"
+#include <QMessageBox>
 
 ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model) :
     QDialog(parent),
@@ -23,8 +25,20 @@ void ConnectDialog::on_buttonBox_accepted()
                        ui->userEdit->text() + ';' +
                        ui->passwordEdit->text();
         qDebug() << from;
-
-        _model->init(from.toLocal8Bit().data());
+        InitCommand command(_model, this, from.toLocal8Bit().data());
+        command.execute();
     }
+    else
+    {
+        QMessageBox::critical(this,
+                              tr("Error!"),
+                              tr("Database is already opened."));
+    }
+}
+
+
+void ConnectDialog::on_buttonBox_rejected()
+{
+    this->close();
 }
 
