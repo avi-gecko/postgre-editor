@@ -15,15 +15,6 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
 {
     ui->setupUi(this);
 
-    qDebug() << QLocale();
-    if (_translator.load(QLocale(), "cw-vesupplier", "_", "translations", ".qm"))
-    {
-        qDebug() << _translator.language();
-        qApp->installTranslator(&_translator);
-        ui->retranslateUi(this);
-    }
-
-
     QDir language_files_path("translations");
     for (auto& file_name : language_files_path.entryList())
     {
@@ -46,6 +37,14 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
         }
     }
     ui->menuLanguages->addActions(_languages);
+
+    qDebug() << QLocale();
+    if (_translator.load(QLocale(), "cw-vesupplier", "_", "translations", ".qm"))
+    {
+        qDebug() << _translator.language();
+        qApp->installTranslator(&_translator);
+        ui->retranslateUi(this);
+    }
 
     QSettings settings("MGSU", "Database");
     settings.beginGroup("MainWindowGeometry");
@@ -116,9 +115,18 @@ void MainWindow::init_command()
 {
     qDebug() << "Initialization database...";
     ConnectDialog w(nullptr, _model, ui->tableView);
-    w.exec();
-    ui->sortingBox->setCheckable(true);
-    ui->sortingBox->setChecked(true);
+    if (w.exec() == QDialog::Accepted)
+    {
+        ui->sortingBox->setEnabled(true);
+        ui->acceptButton->setEnabled(true);
+        ui->declineButton->setEnabled(true);
+        ui->filterButton->setEnabled(true);
+        ui->filterEdit->setEnabled(true);
+        ui->operatorBox->setEnabled(true);
+        ui->addButton->setEnabled(true);
+        ui->removeButton->setEnabled(true);
+        ui->sortingBox->setChecked(true);
+    }
 }
 
 void MainWindow::close_command()
@@ -126,7 +134,15 @@ void MainWindow::close_command()
     if (_model->is_initialized())
         _model->close();
     ui->sortingBox->setChecked(false);
-    ui->sortingBox->setCheckable(false);
+    ui->sortingBox->setEnabled(false);
+    ui->acceptButton->setEnabled(false);
+    ui->declineButton->setEnabled(false);
+    ui->filterButton->setEnabled(false);
+    ui->filterEdit->setEnabled(false);
+    ui->operatorBox->setEnabled(false);
+    ui->addButton->setEnabled(false);
+    ui->removeButton->setEnabled(false);
+    ui->sortingBox->setChecked(false);
 }
 
 void MainWindow::apply_transaction()

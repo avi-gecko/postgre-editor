@@ -42,14 +42,13 @@ void ConnectDialog::dropEvent(QDropEvent *e)
     if (!_model->is_initialized())
     {
         ConnectDialog::_connect_to_db(connection_data.toLocal8Bit().data());
-        close();
+        accept();
     }
-    else
-    {
-        QMessageBox::critical(this,
-                              tr("Error!"),
-                              tr("Database is already opened."));
-    }
+
+    QMessageBox::critical(this,
+                          tr("Error!"),
+                          tr("Database is already opened."));
+    reject();
 }
 
 void ConnectDialog::on_buttonBox_accepted()
@@ -62,19 +61,19 @@ void ConnectDialog::on_buttonBox_accepted()
                        ui->passwordEdit->text();
         qDebug() << connection_data;
         ConnectDialog::_connect_to_db(connection_data.toLocal8Bit().data());
+        accept();
     }
-    else
-    {
-        QMessageBox::critical(this,
-                              tr("Error!"),
-                              tr("Database is already opened."));
-    }
+
+    QMessageBox::critical(this,
+                          tr("Error!"),
+                          tr("Database is already opened."));
+    reject();
 }
 
 
 void ConnectDialog::on_buttonBox_rejected()
 {
-    close();
+    reject();
 }
 
 void ConnectDialog::_connect_to_db(const char* data)
