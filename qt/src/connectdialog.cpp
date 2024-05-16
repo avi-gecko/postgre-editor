@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 #include <QDragEnterEvent>
+#include <QPushButton>
 #include <QMimeData>
 #include <QFile>
 
@@ -13,6 +14,8 @@ ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model, QTableView* v
     _view(view)
 {
     ui->setupUi(this);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Connect"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     setAcceptDrops(true);
 }
 
