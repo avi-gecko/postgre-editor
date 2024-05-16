@@ -31,11 +31,13 @@ public:
 
 PostgreModel::PostgreModel(const char *main_table,
                            const QList<std::pair<int, QSqlRelation> >& relations,
-                           const QList<QString>& column_names)
+                           const QList<QString>& column_names,
+                           QMap<int, std::pair<QValidator*, QString>>* validators)
     :_main_table(main_table),
      _relations(relations),
      _column_names(column_names),
-     _is_init(false)
+     _is_init(false),
+     _validators(validators)
 {
 
 }
@@ -100,7 +102,7 @@ bool PostgreModel::remove(const char *what)
 
 void PostgreModel::bind(QAbstractItemView *gui)
 {
-    gui->setItemDelegate(new QSqlRelationalDelegate(gui));
+    gui->setItemDelegate(new QSqlRelationalDelegateValidation(gui, _validators));
     gui->setModel(_model);
 }
 
