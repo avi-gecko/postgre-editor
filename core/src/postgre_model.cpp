@@ -70,6 +70,11 @@ bool PostgreModel::init(const char *from)
         _model->setRelation(relation.first, relation.second);
     }
 
+    for (int i = 0; i != _model->columnCount(); ++i)
+    {
+        _header.append(_model->headerData(i, Qt::Horizontal).toString());
+    }
+
     update_column_names();
 
     _model->select();
@@ -132,5 +137,15 @@ void PostgreModel::update_column_names()
     {
         _model->setHeaderData(column_index++, Qt::Horizontal, QCoreApplication::translate("QObject", column_name.toLocal8Bit().data()));
     }
+}
+
+QString PostgreModel::column_name(int column)
+{
+    return _header[column];
+}
+
+void PostgreModel::filter(QString filter)
+{
+    _model->setFilter(filter);
 }
 

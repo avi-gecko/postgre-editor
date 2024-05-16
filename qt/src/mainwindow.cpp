@@ -100,6 +100,16 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
             this,
             &MainWindow::sorting_command);
 
+    connect(ui->filterButton,
+            &QPushButton::clicked,
+            this,
+            &MainWindow::set_filter_command);
+
+    connect(ui->declinefilterButton,
+            &QPushButton::clicked,
+            this,
+            &MainWindow::unset_filter_command);
+
 }
 
 MainWindow::~MainWindow()
@@ -126,6 +136,7 @@ void MainWindow::init_command()
         ui->addButton->setEnabled(true);
         ui->removeButton->setEnabled(true);
         ui->sortingBox->setChecked(true);
+        ui->declinefilterButton->setEnabled(true);
     }
 }
 
@@ -143,6 +154,7 @@ void MainWindow::close_command()
     ui->addButton->setEnabled(false);
     ui->removeButton->setEnabled(false);
     ui->sortingBox->setChecked(false);
+    ui->declinefilterButton->setEnabled(false);
 }
 
 void MainWindow::apply_transaction()
@@ -224,6 +236,31 @@ void MainWindow::author_command()
     QMessageBox::information(this,
                              tr("Author"),
                              tr("Created by Alexey Ilin ICTMS 3-5"));
+}
+
+void MainWindow::set_filter_command()
+{
+    QModelIndex index = ui->tableView->currentIndex();
+
+    if (!index.isValid())
+        return;
+
+    int column = index.column();
+
+    QString clause_operator = ' ' + ui->operatorBox->currentText() + ' ';
+    QString column_name = _model->column_name(column);
+    QString value;
+
+    if (clause_operator != " IS NULL " and clause_operator != " IS NOT NULL ")
+        value = '\'' + ui->filterEdit->text() + '\'';
+
+    qDebug() << column_name + clause_operator +  value;
+    _model->filter(column_name + clause_operator +  value);
+}
+
+void MainWindow::unset_filter_command()
+{
+    _model->filter("");
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

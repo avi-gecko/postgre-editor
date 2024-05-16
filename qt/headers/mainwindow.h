@@ -30,6 +30,9 @@ public:
 
     void author_command();
 
+    void set_filter_command();
+    void unset_filter_command();
+
     void closeEvent(QCloseEvent *event) override;
 
 

@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
     const QList<std::pair<int, QSqlRelation>>& realtions = {product_relation};
     const QList<QString> column_names = {QObject::tr("Supplier"),
                                          QObject::tr("Equipment"),
-                                         QObject::tr("Equipment"),
                                          QObject::tr("Price"),
                                          QObject::tr("Stock"),
                                          QObject::tr("Email")};

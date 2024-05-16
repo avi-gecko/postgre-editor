@@ -23,6 +23,8 @@ public:
     void decline();
     QModelIndex index(int row);
     void update_column_names();
+    QString column_name(int column);
+    void filter(QString filter);
 
 
     ~PostgreModel() {delete _model;}
@@ -32,6 +34,7 @@ private:
     const char* _main_table;
     const QList<std::pair<int, QSqlRelation>>& _relations;
     const QList<QString>& _column_names;
+    QList<QString> _header;
     PostgreModel() = delete;
     bool _is_init;
 

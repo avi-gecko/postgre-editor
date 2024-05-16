@@ -43,6 +43,7 @@ void ConnectDialog::dropEvent(QDropEvent *e)
     {
         ConnectDialog::_connect_to_db(connection_data.toLocal8Bit().data());
         accept();
+        return;
     }
 
     QMessageBox::critical(this,
@@ -62,6 +63,7 @@ void ConnectDialog::on_buttonBox_accepted()
         qDebug() << connection_data;
         ConnectDialog::_connect_to_db(connection_data.toLocal8Bit().data());
         accept();
+        return;
     }
 
     QMessageBox::critical(this,

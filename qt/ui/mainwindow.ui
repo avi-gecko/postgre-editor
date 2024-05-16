@@ -111,6 +111,51 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <item>
+            <property name="text">
+             <string notr="true">&gt;</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">&lt;</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">&gt;=</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">&lt;=</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">=</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">!=</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">LIKE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">IS NULL</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">IS NOT NULL</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item>
@@ -133,6 +178,16 @@
            </property>
            <property name="text">
             <string>Apply filter</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="declinefilterButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Decline filters</string>
            </property>
           </widget>
          </item>
