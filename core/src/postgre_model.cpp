@@ -102,14 +102,19 @@ bool PostgreModel::init(const char *from)
     {
         _model->setRelation(relation.first, relation.second);
     }
-
     for (int i = 0; i != _model->columnCount(); ++i)
     {
         _header.append(_model->headerData(i, Qt::Horizontal).toString());
     }
+    for (auto& relation : _relations)
+    {
+        _header[relation.first] = relation.second.displayColumn();
+    }
+
+
+    qDebug() << _header;
 
     update_column_names();
-
 
     _model->select();
 
