@@ -8,6 +8,11 @@
 #include <QLocale>
 #include <QDir>
 
+/*!
+ * \brief Конструктор главного окна, создаются переводы и соединяются кнопки
+ * \param parent
+ * \param model
+ */
 MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -112,15 +117,20 @@ MainWindow::MainWindow(QWidget *parent, PostgreModel* model)
 
 }
 
+/*!
+ * \brief Деструктор главного окна, очистка памяти
+ */
 MainWindow::~MainWindow()
 {
-
     delete ui;
     delete _model;
     qDeleteAll(_languages);
     _languages.clear();
 }
 
+/*!
+ * \brief Инициализация базы данных
+ */
 void MainWindow::init_command()
 {
     qDebug() << "Initialization database...";
@@ -140,6 +150,9 @@ void MainWindow::init_command()
     }
 }
 
+/*!
+ * \brief Закрытие соединения с базой данных
+ */
 void MainWindow::close_command()
 {
     if (_model->is_initialized())
@@ -157,6 +170,9 @@ void MainWindow::close_command()
     ui->declinefilterButton->setEnabled(false);
 }
 
+/*!
+ * \brief Применение транзакции
+ */
 void MainWindow::apply_transaction()
 {
     if (!_model->is_initialized())
@@ -173,6 +189,9 @@ void MainWindow::apply_transaction()
                               tr("Cannot apply transaction\n"));
 }
 
+/*!
+ * \brief Отмена транзакции
+ */
 void MainWindow::decline_transaction()
 {
     if (!_model->is_initialized())
@@ -181,6 +200,9 @@ void MainWindow::decline_transaction()
     qDebug() << "Descline transaction";
 }
 
+/*!
+ * \brief Добавление строки в базу данных
+ */
 void MainWindow::add_command()
 {
     if (!_model->is_initialized())
@@ -200,7 +222,9 @@ void MainWindow::add_command()
     ui->tableView->edit(insert_index);
 }
 
-
+/*!
+ * \brief Удалить строку из базы данных
+ */
 void MainWindow::delete_command()
 {
     if (!_model->is_initialized())
@@ -219,6 +243,9 @@ void MainWindow::delete_command()
     }
 }
 
+/*!
+ * \brief Включение/отключение сортировки
+ */
 void MainWindow::sorting_command()
 {
     switch(ui->sortingBox->checkState()) {
@@ -231,6 +258,9 @@ void MainWindow::sorting_command()
     }
 }
 
+/*!
+ * \brief Информация об авторе
+ */
 void MainWindow::author_command()
 {
     QMessageBox::information(this,
@@ -238,6 +268,9 @@ void MainWindow::author_command()
                              tr("Created by Alexey Ilin ICTMS 3-5"));
 }
 
+/*!
+ * \brief Установка фильтра по выбранному полю
+ */
 void MainWindow::set_filter_command()
 {
     QModelIndex index = ui->tableView->currentIndex();
@@ -258,11 +291,18 @@ void MainWindow::set_filter_command()
     _model->filter(column_name + clause_operator +  value);
 }
 
+/*!
+ * \brief Отключение фильтров
+ */
 void MainWindow::unset_filter_command()
 {
     _model->filter("");
 }
 
+/*!
+ * \brief Событие закрытия окна
+ * \param event Событие закрытия
+ */
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings("MGSU", "Database");

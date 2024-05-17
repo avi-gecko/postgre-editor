@@ -207,5 +207,10 @@
         <source>Email</source>
         <translation>电子邮件</translation>
     </message>
+    <message>
+        <location filename="../../main.cpp" line="22"/>
+        <source>Phone</source>
+        <translation>电话号码</translation>
+    </message>
 </context>
 </TS>

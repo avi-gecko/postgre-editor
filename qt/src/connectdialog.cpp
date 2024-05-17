@@ -7,6 +7,12 @@
 #include <QMimeData>
 #include <QFile>
 
+/**
+ * @brief Конструктор класса ConnectDialog.
+ * @param parent Родительский виджет.
+ * @param model Модель данных PostgreModel.
+ * @param view Представление данных QTableView.
+ */
 ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model, QTableView* view) :
     QDialog(parent),
     ui(new Ui::ConnectDialog),
@@ -19,20 +25,30 @@ ConnectDialog::ConnectDialog(QWidget *parent, PostgreModel* model, QTableView* v
     setAcceptDrops(true);
 }
 
+/**
+ * @brief Деструктор класса ConnectDialog.
+ */
 ConnectDialog::~ConnectDialog()
 {
     delete ui;
 }
 
+/**
+ * @brief Обработчик события входа перетаскивания.
+ * @param e Событие перетаскивания.
+ */
 void ConnectDialog::dragEnterEvent(QDragEnterEvent *e)
 {
     if (e->mimeData()->hasUrls())
     {
         e->acceptProposedAction();
     }
-
 }
 
+/**
+ * @brief Обработчик события отпускания перетаскивания.
+ * @param e Событие отпускания перетаскивания.
+ */
 void ConnectDialog::dropEvent(QDropEvent *e)
 {
     QFile file_connection(e->mimeData()->urls()[0].toLocalFile());
@@ -55,6 +71,9 @@ void ConnectDialog::dropEvent(QDropEvent *e)
     reject();
 }
 
+/**
+ * @brief Обработчик события принятия диалогового окна.
+ */
 void ConnectDialog::on_buttonBox_accepted()
 {
     if (!_model->is_initialized())
@@ -75,12 +94,18 @@ void ConnectDialog::on_buttonBox_accepted()
     reject();
 }
 
-
+/**
+ * @brief Обработчик события отклонения диалогового окна.
+ */
 void ConnectDialog::on_buttonBox_rejected()
 {
     reject();
 }
 
+/**
+ * @brief Метод подключения к базе данных.
+ * @param data Данные для подключения.
+ */
 void ConnectDialog::_connect_to_db(const char* data)
 {
     if (!_model->init(data))
@@ -96,4 +121,3 @@ void ConnectDialog::_connect_to_db(const char* data)
     _view->setSortingEnabled(true);
     _view->show();
 }
-

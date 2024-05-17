@@ -1,3 +1,4 @@
+
 #include "../headers/postgre_model.hpp"
 #include <QSqlDatabase>
 #include <QDebug>
@@ -6,29 +7,54 @@
 #include <QSqlRelationalDelegate>
 #include <QCoreApplication>
 
+class PostgreModel;
 
-
+/**
+ * @class QSqlRelationalTableModelDebug
+ * @brief Класс, наследующий QSqlRelationalTableModel для отладки.
+ */
 class QSqlRelationalTableModelDebug: public QSqlRelationalTableModel
 {
 public:
+    /**
+     * @brief Конструктор класса QSqlRelationalTableModelDebug.
+     * @param parent Родительский объект.
+     * @param db База данных.
+     */
     QSqlRelationalTableModelDebug(QObject *parent = nullptr,
               const QSqlDatabase &db = QSqlDatabase()) {
         QSqlRelationalTableModel(parent, db);
     }
+    /**
+     * @brief Метод для получения дополнительных данных из модели.
+     * @param parent Родительский индекс модели.
+     */
     void fetchMore(const QModelIndex &parent = QModelIndex())
     {
         qDebug() << "Fetch more!";
         QSqlQueryModel::fetchMore(parent);
     }
+    /**
+     * @brief Метод для проверки, можно ли получить больше данных из модели.
+     * @param parent Родительский индекс модели.
+     * @return Возвращает true, если можно получить больше данных, иначе false.
+     */
     bool canFetchMore(const QModelIndex &parent = QModelIndex())
     {
         qDebug() << "Can fetch more!";
         return QSqlQueryModel::canFetchMore(parent);
     }
+
 };
 
 
-
+/**
+ * @brief Конструктор класса PostgreModel.
+ * @param main_table Главная таблица базы данных.
+ * @param relations Список отношений между таблицами.
+ * @param column_names Список имен столбцов.
+ * @param validators Валидаторы для проверки данных.
+ */
 PostgreModel::PostgreModel(const char *main_table,
                            const QList<std::pair<int, QSqlRelation> >& relations,
                            const QList<QString>& column_names,
@@ -42,6 +68,11 @@ PostgreModel::PostgreModel(const char *main_table,
 
 }
 
+/**
+ * @brief Инициализация модели.
+ * @param from Строка с данными для подключения к базе данных.
+ * @return Возвращает true, если подключение к базе данных успешно.
+ */
 bool PostgreModel::init(const char *from)
 {
     QString parse_from = from;
@@ -79,13 +110,18 @@ bool PostgreModel::init(const char *from)
 
     update_column_names();
 
+
     _model->select();
 
-    qDebug() << db.driver()->hasFeature(QSqlDriver::QuerySize);
+    qDebug() << "QuerySize: " << db.driver()->hasFeature(QSqlDriver::QuerySize);
     _is_init = true;
     return ok;
 }
 
+/**
+ * @brief Добавление новой строки в модель.
+ * @return Возвращает индекс добавленной строки.
+ */
 int PostgreModel::add()
 {
     int row = _model->rowCount();
@@ -94,44 +130,75 @@ int PostgreModel::add()
     return row;
 }
 
+/**
+ * @brief Удаление строки из модели.
+ * @param what Индекс строки для удаления.
+ * @return Возвращает true, если удаление прошло успешно.
+ */
 bool PostgreModel::remove(const char *what)
 {
     unsigned int row_index = QString(what).toUInt();
     return _model->removeRow(row_index);
 }
 
+/*!
+ * \brief Привязка модели к view
+ * \param gui view для привязки
+ */
 void PostgreModel::bind(QAbstractItemView *gui)
 {
     gui->setItemDelegate(new QSqlRelationalDelegateValidation(gui, _validators));
     gui->setModel(_model);
 }
 
+/*!
+ * \brief Проверка на инициализацию
+ * \return true если инициализирована, иначе false
+ */
 bool PostgreModel::is_initialized()
 {
     return _is_init;
 }
 
+/*!
+ * \brief Закрытие подключения к базе данных
+ */
 void PostgreModel::close()
 {
     delete _model;
     _is_init = false;
 }
 
+/*!
+ * \brief Применение транзакции
+ * \return true если успешно приминена транзакция, иначе false
+ */
 bool PostgreModel::apply()
 {
     return _model->submitAll();
 }
 
+/*!
+ * \brief Отмена транзакции
+ */
 void PostgreModel::decline()
 {
     _model->revertAll();
 }
 
+/*!
+ * \brief Возвращение индекса из модели
+ * \param row Индекс строки
+ * \return Объект модели
+ */
 QModelIndex PostgreModel::index(int row)
 {
     return _model->index(row, 1);
 }
 
+/*!
+ * \brief Перевод полей таблицы
+ */
 void PostgreModel::update_column_names()
 {
     int column_index = 1;
@@ -141,11 +208,20 @@ void PostgreModel::update_column_names()
     }
 }
 
+/*!
+ * \brief Доступ к названием полей
+ * \param column Индекс поля
+ * \return Название поля
+ */
 QString PostgreModel::column_name(int column)
 {
     return _header[column];
 }
 
+/**
+ * @brief Фильтрация модели.
+ * @param filter Строка фильтра.
+ */
 void PostgreModel::filter(QString filter)
 {
     _model->setFilter(filter);

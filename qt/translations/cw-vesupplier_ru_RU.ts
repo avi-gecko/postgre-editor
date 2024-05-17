@@ -209,5 +209,10 @@
         <source>Email</source>
         <translation>Электронная почта</translation>
     </message>
+    <message>
+        <location filename="../../main.cpp" line="22"/>
+        <source>Phone</source>
+        <translation>Номер телефона</translation>
+    </message>
 </context>
 </TS>
